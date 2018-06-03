@@ -96,6 +96,7 @@ public class FluentAPICodeGenerator implements CodeGenerator {
                                     GenPlanItem item = new GenPlanItem();
                                     item.memberName = vrble.getName();
                                     item.memberType = vrble.getType();
+                                    item.isFinal = vrble.getModifiers().getFlags().contains(Modifier.FINAL);
                                     genPlan.put(item.memberName.toString(), item);
                                 }
                             }
@@ -150,7 +151,7 @@ public class FluentAPICodeGenerator implements CodeGenerator {
                                                     null);
                                     modifiedClazz = make.addClassMember(modifiedClazz, getterMethod);
                                 }
-                                if (!itm.hasSetter) {
+                                if (!itm.hasSetter & !itm.isFinal) {
                                     // create setter
                                     // public <clazz> memberName(<member_type> value) { this.<member_name> = value; return this; }
 
@@ -200,12 +201,13 @@ public class FluentAPICodeGenerator implements CodeGenerator {
 
         private Name memberName;
         private Tree memberType;
-        private boolean hasSetter;
-        private boolean hasGetter;
+        private boolean hasSetter = false;
+        private boolean hasGetter = false;
+        private boolean isFinal = false;
 
         @Override
         public String toString() {
-            return "GenPlanItem{" + "memberName=" + memberName + ", memberType=" + memberType + ", hasSetter=" + hasSetter + ", hasGetter=" + hasGetter + '}';
+            return "GenPlanItem{" + "memberName=" + memberName + ", memberType=" + memberType + ", hasSetter=" + hasSetter + ", hasGetter=" + hasGetter + ", isFinal=" + isFinal + '}';
         }
 
     }
